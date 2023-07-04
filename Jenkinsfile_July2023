@@ -1,0 +1,31 @@
+node{
+  def mavenHome = tool name: 'Maven3.9.2'
+  stage('1Clone'){
+    //git "https://github.com/Jundyn/maven-web-application"
+    git credentialsId: 'gitHubCredentials', url: 'https://github.com/Jundyn/maven-web-application'
+  }
+  stage('2Test+build'){
+    sh "${mavenHome}/bin/mvn clean package"
+  }
+  
+  stage('SonarQube'){
+    sh "${mavenHome}/bin/mvn sonar:sonar"
+  }
+  /*
+  stage('4UploadArtifacts'){
+    sh "${mavenHome}/bin/mvn deploy"
+  }
+  
+  stage('5Deploy'){
+    deploy adapters: [tomcat9(credentialsId: 'landmarkTomcatLogin', path: '', url: 'http://34.201.118.159:8080/')], contextPath: null, war: 'target/*war'
+  }
+  stage('6Notification'){
+    emailext body: '''Hi Team,
+
+Build status
+
+Landmark Technologies''', recipientProviders: [developers(), contributor()], subject: 'build status', to: 'developers'
+
+  }
+ */
+}
